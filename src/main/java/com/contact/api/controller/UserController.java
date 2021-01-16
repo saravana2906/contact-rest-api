@@ -1,8 +1,10 @@
 package com.contact.api.controller;
 
 
+import com.contact.api.dto.Pageutil;
 import com.contact.api.entity.User;
 
+import com.contact.api.exception.ClientRequestException;
 import com.contact.api.forms.SignupForm;
 import com.contact.api.forms.UserUpdate;
 import com.contact.api.service.UserService;
@@ -10,18 +12,25 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.annotation.CurrentSecurityContext;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.HttpClientErrorException;
+
+import java.util.HashMap;
 
 @RestController
-@RequestMapping("/users")
+@RequestMapping("/api/users")
 public class UserController {
     @Autowired
     UserService userService;
 
     @GetMapping
-    private Page<User> getAllUsers(Pageable pageable){
-return userService.getAllUsers(pageable);
+    private Page<User> getAllUsers(Pageutil pageable){
+        return userService.getAllUsers(pageable);
     }
 
     @GetMapping("/{userId}")
@@ -31,7 +40,12 @@ return userService.getAllUsers(pageable);
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    private User createUser(@RequestBody @Validated SignupForm signupForm){
+    private User createUser(@RequestBody @Validated SignupForm signupForm, @CurrentSecurityContext SecurityContext securitycontext) throws ClientRequestException {
+        System.out.println(securitycontext.getAuthentication());
+        Jwt principal = (Jwt) securitycontext.getAuthentication().getPrincipal();
+        if(!signupForm.getEmailId().equals((String)principal.getClaim("email"))){
+            throw new ClientRequestException("Access Denied Email id not matching with token");
+        }
         return userService.createUser(signupForm);
     }
 
@@ -45,6 +59,13 @@ return userService.getAllUsers(pageable);
     @ResponseStatus(HttpStatus.NO_CONTENT)
     private void deleteUser(@PathVariable Long userId){
         userService.deleteUser(userId);
+    }
+
+    @GetMapping("/signin")
+    @ResponseStatus(HttpStatus.OK)
+    private User signinUser(@AuthenticationPrincipal Jwt jwt){
+        String emailId = jwt.getClaim("email");
+        return userService.getUserByEmail(emailId);
     }
 
 

@@ -30,17 +30,17 @@ public class UserService {
     }
 
     public User getUser(Long userId) {
-        return userRepository.findById(userId).orElseThrow(()->{return new NoSuchElementException();
+        return userRepository.findById(userId).orElseThrow(()->{return new NoSuchElementException("User id is not present"+userId);
         });
     }
 
     public User updateUser(UserUpdate updateUser) {
-        User user = userRepository.findById(updateUser.getUserId()).orElseThrow(()->{return new NoSuchElementException();
+        User user = userRepository.findById(updateUser.getUserId()).orElseThrow(()->{return new NoSuchElementException("User id is not present"+updateUser.getUserId());
         });
         user.setUserName(updateUser.getUserName());
         user.setEmailId(updateUser.getEmailId());
         user.setPhoneNo(updateUser.getPhone());
-       return userRepository.save(user);
+        return userRepository.save(user);
     }
 
     public void deleteUser(Long userId) {
@@ -50,5 +50,10 @@ public class UserService {
         } else {
             throw new NoSuchElementException("User Id not exist "+userId);
         }
+    }
+
+    public User getUserByEmail(String emailId) {
+
+        return userRepository.findByEmailId(emailId);
     }
 }
