@@ -1,6 +1,7 @@
 package com.contact.api.service;
 
 
+import com.contact.api.dto.Pageutil;
 import com.contact.api.entity.User;
 import com.contact.api.forms.SignupForm;
 import com.contact.api.forms.UserUpdate;
@@ -8,7 +9,9 @@ import com.contact.api.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,7 +23,8 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
 
-    public Page<User> getAllUsers(Pageable pageable){
+    public Page<User> getAllUsers(Pageutil pageutil){
+        Pageable pageable = PageRequest.of(pageutil.getPage(),pageutil.getSize(), Sort.by(pageutil.getSort()).ascending());
         return userRepository.findAll(pageable);
     }
 

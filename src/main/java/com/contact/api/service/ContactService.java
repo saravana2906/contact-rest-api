@@ -1,5 +1,6 @@
 package com.contact.api.service;
 
+import com.contact.api.dto.Pageutil;
 import com.contact.api.entity.Contact;
 import com.contact.api.entity.ContactPhone;
 import com.contact.api.forms.CreateContactForm;
@@ -9,7 +10,9 @@ import com.contact.api.repository.UserRepository;
 import org.apache.commons.collections.IteratorUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -30,16 +33,18 @@ public class ContactService {
 
         return contactRepository.findById(contactId).orElseThrow(()-> new NoSuchElementException(contactId+" contact id doesn't exist"));
     }
-    public Page<Contact> getAllContacts(Pageable pageable, Long userId){
+    public Page<Contact> getAllContacts(Pageutil pageutil, Long userId){
 
+        Pageable pageable = PageRequest.of(pageutil.getPage(),pageutil.getSize(), Sort.by(pageutil.getSort()).ascending());
         return contactRepository.findByUserUserId(userId,pageable);
     }
-    public Contact updateContact(Contact contact){
+    public Contact updateContact(Contact contact, Long userId){
         Contact dbCopy = contactRepository.findById(contact.getContactId()).get();
         dbCopy.setName(contact.getName());
         dbCopy.setEmailId(contact.getEmailId());
         dbCopy.setPhones(contact.getPhones());
-        return contactRepository.save(contact);
+        dbCopy.getUser();
+        return contactRepository.save(dbCopy);
 
     }
     public void deleteContact(Long contactId){

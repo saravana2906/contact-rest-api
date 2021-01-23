@@ -35,14 +35,21 @@ public class ContactController {
     }
 
 
-    @GetMapping("/user/{userId}")
-    public Page<Contact> getAllContacts(@RequestBody Pageutil pageable, @PathVariable Long userId, @AuthenticationPrincipal Jwt jwt){
-        return contactService.getAllContacts(pageable,userId);
+    @PostMapping("/user/{userId}")
+    public Page<Contact> getAllContacts(@RequestBody Pageutil pageutil, @PathVariable Long userId, @AuthenticationPrincipal Jwt jwt){
+
+        return contactService.getAllContacts(pageutil,userId);
     }
 
-    @PutMapping("/{contactId}")
-    public Contact updateContact(@RequestBody Contact contact){
-        return contactService.updateContact(contact);
+    @PutMapping("/user/{userId}")
+    public Contact updateContact(@RequestBody Contact contact, @PathVariable Long userId){
+        return contactService.updateContact(contact,userId);
     }
+
+    @GetMapping("/{contactId}")
+    public Contact getContact(@PathVariable Long contactId){
+        return contactService.getContact(contactId);
+    }
+
 
 }

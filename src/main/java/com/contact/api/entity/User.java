@@ -13,8 +13,7 @@ import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @Entity
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 public class User {
 

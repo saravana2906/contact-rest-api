@@ -28,8 +28,8 @@ public class UserController {
     @Autowired
     UserService userService;
 
-    @GetMapping
-    private Page<User> getAllUsers(Pageutil pageable){
+    @PostMapping("/all")
+    private Page<User> getAllUsers(@RequestBody Pageutil pageable){
         return userService.getAllUsers(pageable);
     }
 
