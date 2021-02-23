@@ -65,6 +65,7 @@ public class UserController {
     @ResponseStatus(HttpStatus.OK)
     private User signinUser(@AuthenticationPrincipal Jwt jwt){
         String emailId = jwt.getClaim("email");
+        System.out.println("Email "+ emailId);
         return userService.getUserByEmail(emailId);
     }
 

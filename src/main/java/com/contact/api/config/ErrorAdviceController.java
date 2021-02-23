@@ -21,7 +21,7 @@ public class ErrorAdviceController  extends ResponseEntityExceptionHandler {
 
 @ExceptionHandler(ClientRequestException.class)
     public ResponseEntity<ErrorDetails> handleException(ClientRequestException exception , WebRequest request){
-
+System.out.println("Error "+exception.fillInStackTrace());
     ErrorDetails details = new ErrorDetails();
     details.setMessage(exception.getMessage());
     details.setTimestamp(Calendar.getInstance().getTime());
