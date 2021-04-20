@@ -3,7 +3,7 @@
 Contact Management rest API project for learning built using various concepts.
 Learned concepts are follows 
 - Never applied paging and sorting repository before , its good learning 
-  - Sort can be list of various columns ordering (descending/ascending)
+  - Sort can be list of various columns ordering (descending/ascending) (https://bezkoder.com/spring-boot-pagination-sorting-example/)
   - Offset - Page number
   - size of each page 
   - Pageable interface or PageRequest.of(offset,size,sort) to create pageable object and receive Page&lt;T&gt;
